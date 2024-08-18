@@ -8,32 +8,21 @@ function Square({ value, onSquareClick }) {
   return <button className='square' onClick={onSquareClick}>{value}</button>
 }
 
-function Board({ xIsNext, squares, onPlay}){
+function Board({ currentTurn, squares, onPlay, playerSymbol }){
+  let isMyTurn = (currentTurn == playerSymbol);
 
   function handleClick(i) {
-    if (determineWinner(squares) || squares[i]) {
+    if (determineWinner(squares) || squares[i] || !isMyTurn) {
       return;
     }
-    const nextSquares = squares.slice();
-    if (xIsNext) {
-      nextSquares[i] = 'X';
-    } else {
-      nextSquares[i] = 'O';
-    }
+    const nextSquares = squares.slice();;
+    nextSquares[i] = playerSymbol;
     onPlay(nextSquares);
-  }
-  
-  const winner = determineWinner(squares);
-  let status;
-  if (winner) {
-    status = "Winner: " + winner;
-  } else {
-    status = "Next player: " + (xIsNext ? "X": "O");
-  }
+  };
 
   return (
-    <>
-      <div className="status">{status}</div>
+    <div className='board'>
+      <div className="player-label">Player ({playerSymbol})'s board</div>
       <div className='board-row'>
         <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
         <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
@@ -49,14 +38,15 @@ function Board({ xIsNext, squares, onPlay}){
         <Square value={squares[7]} onSquareClick={() => handleClick(7)}/>
         <Square value={squares[8]} onSquareClick={() => handleClick(8)}/>
       </div>
-    </>  
+    </div>  
   );
 }
 
 export default function Game() {
+  const players = ['X', 'O']
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  const xIsNext = currentMove % 2 === 0;
+  const currentTurn = players[currentMove % 2];
   const currentSquares = history[currentMove];
 
   function handlePlay(nextSquares){
@@ -81,12 +71,22 @@ export default function Game() {
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     )
-  })
+  });
+
+  const winner = determineWinner(currentSquares);
+  let status;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (currentTurn);
+  }
 
   return (
     <div className="game">
+      <div className="status"><b><u>{status}</u></b></div>
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board currentTurn={currentTurn} squares={currentSquares} onPlay={handlePlay} playerSymbol={players[0]} />
+        <Board currentTurn={currentTurn} squares={currentSquares} onPlay={handlePlay} playerSymbol={players[1]} />
       </div>
       <div className="game-info">
         <ol>{moves}</ol>
