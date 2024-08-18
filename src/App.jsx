@@ -9,9 +9,10 @@ function Square({ value, onSquareClick }) {
 }
 
 function Board({ currentTurn, squares, onPlay, playerSymbol }){
+  let isMyTurn = (currentTurn == playerSymbol);
 
   function handleClick(i) {
-    if (determineWinner(squares) || squares[i] || currentTurn !== playerSymbol) {
+    if (determineWinner(squares) || squares[i] || !isMyTurn) {
       return;
     }
     const nextSquares = squares.slice();;
@@ -82,7 +83,7 @@ export default function Game() {
 
   return (
     <div className="game">
-      <div className="status">{status}</div>
+      <div className="status"><b><u>{status}</u></b></div>
       <div className="game-board">
         <Board currentTurn={currentTurn} squares={currentSquares} onPlay={handlePlay} playerSymbol={players[0]} />
         <Board currentTurn={currentTurn} squares={currentSquares} onPlay={handlePlay} playerSymbol={players[1]} />
