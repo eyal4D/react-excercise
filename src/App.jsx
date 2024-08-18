@@ -2,10 +2,13 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Button from '@mui/material/Button'
+import '@fontsource/roboto/500.css';
+import { Typography } from '@mui/material'
 
 
 function Square({ value, onSquareClick }) {
-  return <button className='square' onClick={onSquareClick}>{value}</button>
+  return <Button variant="outlined" className='square' onClick={onSquareClick}>{value}</Button>
 }
 
 function Board({ currentTurn, squares, onPlay, playerSymbol }){
@@ -22,7 +25,7 @@ function Board({ currentTurn, squares, onPlay, playerSymbol }){
 
   return (
     <div className='board'>
-      <div className="player-label">Player ({playerSymbol})'s board</div>
+      <Typography className="player-label">Player ({playerSymbol})'s board</Typography>
       <div className='board-row'>
         <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
         <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
@@ -68,7 +71,7 @@ export default function Game() {
     }
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        <Button variant="text" onClick={() => jumpTo(move)}>{description}</Button>
       </li>
     )
   });
@@ -83,7 +86,7 @@ export default function Game() {
 
   return (
     <div className="game">
-      <div className="status"><b><u>{status}</u></b></div>
+      <Typography className="status"><b><u>{status}</u></b></Typography>
       <div className="game-board">
         <Board currentTurn={currentTurn} squares={currentSquares} onPlay={handlePlay} playerSymbol={players[0]} />
         <Board currentTurn={currentTurn} squares={currentSquares} onPlay={handlePlay} playerSymbol={players[1]} />
