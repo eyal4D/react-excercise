@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import '@fontsource/roboto/500.css';
 import { Typography } from '@mui/material'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { redirect, useLocation, useNavigate } from 'react-router-dom';
 
 
 function Square({ value, onSquareClick }) {
@@ -10,7 +10,7 @@ function Square({ value, onSquareClick }) {
 }
 
 function Board({ currentTurn, squares, onPlay, playerSymbol }){
-  let isMyTurn = (currentTurn == playerSymbol[1]);
+  let isMyTurn = (currentTurn[1] == playerSymbol[1]);
 
   function handleClick(i) {
     if (determineWinner(squares) || squares[i] || !isMyTurn) {
@@ -89,10 +89,24 @@ export default function Game() {
 
   const winner = determineWinner(currentSquares);
   let status;
+  let gameEnded;
   if (winner) {
     status = "Winner: " + winner;
+    gameEnded = true;
   } else {
-    status = "Next player: " + (currentTurn);
+    status = `Next player:   ${currentTurn[0]} (${currentTurn[1]})`;
+  }
+
+  
+  function RestartButton(){
+    function restartGame(){
+      navigate('/');
+    }
+    if (!gameEnded){
+      return;
+    } else {
+    return (<Button onClick={restartGame} variant="contained">Restart</Button>);
+  }
   }
 
   return (
@@ -105,6 +119,7 @@ export default function Game() {
       <div className="game-info">
         <ol>{moves}</ol>
       </div>
+      <RestartButton/>
     </div>
   )
 }
